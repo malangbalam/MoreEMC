@@ -1,0 +1,9 @@
+.gradle/
+.settings/
+build/
+eclipse/
+temp/
+curseforge/
+bin/
+.classpath
+.project
