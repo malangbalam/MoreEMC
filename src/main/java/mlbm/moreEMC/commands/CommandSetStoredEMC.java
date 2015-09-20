@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import mlbm.moreEMC.eventhandler.BlockSelector;
+import mlbm.moreEMC.utils.blockselector.BlockSelector;
+import mlbm.moreEMC.utils.blockselector.BlockSelector.BlockSelectedListener;
+import mlbm.moreEMC.utils.blockselector.WorldPosition;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,9 +14,9 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.MovingObjectPosition;
 
-public class CommandSetStoredEMC extends CommandBase {
-	public BlockSelector bs = new BlockSelector();
-	
+public class CommandSetStoredEMC extends CommandBase implements BlockSelectedListener {
+	public BlockSelector bs = new BlockSelector(this);
+
 	@Override
 	public int getRequiredPermissionLevel() {
 		return 2;
@@ -38,15 +40,33 @@ public class CommandSetStoredEMC extends CommandBase {
 
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
-		if((args.length==1) && (args[0].equals("select"))){
-			
-		}else{
-			showUsage(sender);
+		if (sender instanceof EntityPlayerMP) {
+			if ((args.length == 1) && (args[0].equals("select"))) {
+				sender.addChatMessage(new ChatComponentTranslation("moreEMC.cmd.select.help", new Object[]{}));
+				bs.request((EntityPlayerMP) sender);
+			} else if ((args.length == 2) && (args[0].equals("set"))) {
+				int value = parseInt(sender, args[1]);
+				WorldPosition selected = bs.getData((EntityPlayerMP) sender);
+				if (selected != null) {
+					//perform stuffs
+				}else{
+					sender.addChatMessage(new ChatComponentTranslation("moreEMC.cmd.selectionRequired",new Object[]{}));
+				}
+			} else {
+				showUsage(sender);
+			}
 		}
 	}
-	
-	private void showUsage(ICommandSender sender){
-		sender.addChatMessage(new ChatComponentTranslation("commands.generic.syntax", new Object[]{}));
-		sender.addChatMessage(new ChatComponentTranslation("moreEMC.cmd.setstoredemc.usage", new Object[]{}));
+
+	private void showUsage(ICommandSender sender) {
+		sender.addChatMessage(new ChatComponentTranslation("commands.generic.syntax", new Object[] {}));
+		sender.addChatMessage(new ChatComponentTranslation("moreEMC.cmd.setstoredemc.usage", new Object[] {}));
+	}
+
+	@Override
+	public void onBlockSelected(EntityPlayerMP player, WorldPosition position) {
+		String dimid = position.world!=null?Integer.toString(position.world.provider.dimensionId):"null";
+		Object[] data = {Integer.toString(position.x),Integer.toString(position.y),Integer.toString(position.z),dimid};
+		player.addChatMessage(new ChatComponentTranslation("moreEMC.cmd.selected", data));
 	}
 }

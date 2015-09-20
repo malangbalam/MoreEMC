@@ -2,3 +2,7 @@
 #			Command   			  #
 ####################
 moreEMC.cmd.setstoredemc.usage=/setstoredemc <set:select> <emc값>
+
+moreEMC.cmd.selected=블럭 좌표 %s, %s, %s 이 설정되었습니다(차원 아이디:%s) 
+moreEMC.cmd.selectionRequired=/setstoredemc select 명령으로 블럭을 먼저 선택하세요
+moreEMC.cmd.select.help=고체 블럭을 손으로 쳐서 블럭을 선택해주세요

@@ -28,6 +28,7 @@ minecraft {
 
 dependencies {
     compile "com.pahimar.ee3:EquivalentExchange3:1.7.10-0.3.505:dev"
+    compile "org.mozilla:rhino:1.7.7"
 }
 
 processResources

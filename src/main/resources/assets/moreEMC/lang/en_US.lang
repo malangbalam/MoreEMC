@@ -2,3 +2,7 @@
 #			Command   			  #
 ####################
 moreEMC.cmd.setstoredemc.usage=/setstoredemc <set:select> <emcvalue> 
+
+moreEMC.cmd.selected=you have selected %s, %s, %s in dimension %s
+moreEMC.cmd.selectionRequired=you must select block using /setstoredemc select
+moreEMC.cmd.select.help=hit solid block to select
