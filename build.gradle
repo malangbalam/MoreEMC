@@ -27,7 +27,7 @@ minecraft {
 }
 
 dependencies {
-//    compile 'EquivalentExchange3'
+    compile "com.pahimar.ee3:EquivalentExchange3:1.7.10-0.3.505:dev"
 }
 
 processResources
