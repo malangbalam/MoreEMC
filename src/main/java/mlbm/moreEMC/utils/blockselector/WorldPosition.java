@@ -1,8 +1,11 @@
 package mlbm.moreEMC.utils.blockselector;
 
 import net.minecraft.world.World;
-import net.minecraftforge.common.DimensionManager;
 
+/**
+ * @author hasunwoo The WorldPosition is representation of minecraft coordinate
+ *         and world object
+ */
 public class WorldPosition {
 	public int x;
 	public int y;

@@ -2,15 +2,12 @@ package mlbm.moreEMC.main;
 
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import mlbm.moreEMC.commands.CommandSetStoredEMC;
-import mlbm.moreEMC.utils.blockselector.BlockSelector;
-import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid = MoreEMC.MODID, version = MoreEMC.VERSION, name = MoreEMC.NAME, dependencies = "required-after:EE3;")
 public class MoreEMC {
