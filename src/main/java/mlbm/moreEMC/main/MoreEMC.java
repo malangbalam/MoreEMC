@@ -9,15 +9,11 @@ import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import mlbm.moreEMC.commands.CommandSetStoredEMC;
 
-@Mod(modid = MoreEMC.MODID, version = MoreEMC.VERSION, name = MoreEMC.NAME, dependencies = "required-after:EE3;")
+@Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME, dependencies = "required-after:EE3;")
 public class MoreEMC {
 	public static Logger LOGGER;
 
-	public static final String MODID = "moreEMC";
-	public static final String VERSION = "0.1.1";
-	public static final String NAME = "More EMC";
-
-	@Mod.Instance(MODID)
+	@Mod.Instance(Constants.MODID)
 	public static MoreEMC instance;
 
 	@EventHandler
