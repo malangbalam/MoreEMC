@@ -7,9 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * 
- * @author hasunwoo Annotated class must implement @IScriptAPIProvider this
+ * @author hasunwoo Annotated class must extends @ScriptAPIProvider. this
  *         annotation is searched by moreEMC API annotation handling mechanism.
- *         any class that implements @IScriptAPIProvider will added to script
+ *         any class that extends @ScriptAPIProvider will added to script
  *         runtime automatically.
  */
 @Retention(RetentionPolicy.RUNTIME)

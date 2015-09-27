@@ -3,6 +3,8 @@ package mlbm.moreEMC.coremod;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 
@@ -14,7 +16,8 @@ import cpw.mods.fml.common.discovery.ASMDataTable.ASMData;
 import cpw.mods.fml.common.event.FMLConstructionEvent;
 import cpw.mods.fml.relauncher.IFMLCallHook;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
-import mlbm.moreEMC.api.IScriptAPIProvider;
+import mlbm.moreEMC.api.ScriptAPIProvider;
+import mlbm.moreEMC.api.ScriptConstantProvider;
 import mlbm.moreEMC.main.Constants;
 import mlbm.moreEMC.script.core.ScriptManager;
 
@@ -69,11 +72,29 @@ public class MoreEMCFMLPlugin implements IFMLLoadingPlugin {
 				Set<ASMData> annotations = asm.getAll("mlbm.moreEMC.api.ScriptAPI");
 				for (ASMData data : annotations) {
 					try {
-						IScriptAPIProvider instance = (IScriptAPIProvider) Class.forName(data.getClassName())
+						ScriptAPIProvider instance = (ScriptAPIProvider) Class.forName(data.getClassName())
 								.newInstance();
-						ScriptManager.APIs.add(instance);
+						ScriptManager.addAPI(instance);
 						System.out.println("MoreEMC API Annotation Processed:modid=" + instance.getModID()
 								+ ",classname:" + data.getClassName());
+					} catch (Throwable t) {
+						System.out.println(
+								"MoreEMC has severe error while processing API annotation:" + data.getClassName());
+						t.printStackTrace();
+					}
+				}
+				annotations = asm.getAll("mlbm.moreEMC.api.ScriptConstantProvider");
+				for (ASMData data : annotations) {
+					try {
+						Class cla = Class.forName(data.getClassName());
+						String propertyname = ((ScriptConstantProvider) cla.getAnnotation(ScriptConstantProvider.class))
+								.propertyName();
+						if (!StringUtils.isEmpty(propertyname)) {
+							ScriptManager.addConstantProvider(cla);
+							System.out.println("MoreEMC API Annotation Processed: classname=" + data.getClassName());
+						} else {
+							throw new Exception("propertyname is null");
+						}
 					} catch (Throwable t) {
 						System.out.println(
 								"MoreEMC has severe error while processing API annotation:" + data.getClassName());
