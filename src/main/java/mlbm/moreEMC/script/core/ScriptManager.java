@@ -12,10 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
-import javax.sound.sampled.AudioFormat.Encoding;
-
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -90,8 +89,8 @@ public class ScriptManager {
 			ZipFile zf = null;
 			try{
 				zf = new ZipFile(f);
-				Map<String,ZipEntry> entries = retrieveEntriesFromZipfile(zf);
-				ZipEntry ent = entries.get("manifest.info");
+				Map<String,ZipArchiveEntry> entries = retrieveEntriesFromZipfile(zf);
+				ZipArchiveEntry ent = entries.get("manifest.info");
 				if(!ent.isDirectory()){
 					InputStream is = zf.getInputStream(ent);
 					String manifest = readFileIntoString(is);
@@ -177,11 +176,11 @@ public class ScriptManager {
 		return false;
 	}
 	
-	private static Map<String,ZipEntry> retrieveEntriesFromZipfile(ZipFile zf) throws IOException {
-		Enumeration<? extends ZipEntry> ent = zf.entries();
-		Map<String,ZipEntry> entries = new HashMap<String,ZipEntry>();
+	private static Map<String,ZipArchiveEntry> retrieveEntriesFromZipfile(ZipFile zf) throws IOException {
+		Enumeration<ZipArchiveEntry> ent = zf.getEntries();
+		Map<String,ZipArchiveEntry> entries = new HashMap<String,ZipArchiveEntry>();
 		while(ent.hasMoreElements()){
-			ZipEntry e = ent.nextElement();
+			ZipArchiveEntry e = ent.nextElement();
 			entries.put(e.getName(),e);
 		}
 		return entries;

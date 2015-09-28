@@ -19,7 +19,7 @@ import mlbm.moreEMC.script.core.ScriptManager;
 import mlbm.moreEMC.script.event.ScriptEventBus;
 import mlbm.moreEMC.script.event.ScriptEventHelper;
 
-@Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME, dependencies = "required-after:EE3;")
+@Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME)
 public class MoreEMC {
 	public static Logger LOGGER;
 

@@ -2,6 +2,7 @@ package mlbm.moreEMC.script.event;
 
 import org.mozilla.javascript.EcmaError;
 
+import mlbm.moreEMC.main.MoreEMC;
 import mlbm.moreEMC.script.core.ScriptHolder;
 import mlbm.moreEMC.script.core.ScriptManager;
 
@@ -21,8 +22,8 @@ public class ScriptEventHelper {
 				String funcName = script.eventReceivers.get(eventName);
 				try{
 					script.call(funcName, args);
-				}catch(EcmaError e){
-					e.printStackTrace();
+				}catch(Exception e){
+					MoreEMC.LOGGER.catching(e);
 				}
 			}
 		}

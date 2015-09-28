@@ -124,7 +124,9 @@ public class ScriptCompiler {
 		((ScriptableObject) scope).defineFunctionProperties(topScopeFuncs, ScriptManager.topAPI.getClass(), ScriptableObject.PERMANENT);
 		try {
 			for (ScriptAPIProvider p : ScriptManager.APIs) {
-				ScriptableObject.defineClass(scope, p.getClass());
+				if(p.shouldLoad()){
+					ScriptableObject.defineClass(scope, p.getClass());
+				}
 			}
 			for (Class c : ScriptManager.constantProviders) {
 				String name = ((ScriptConstantProvider) c.getAnnotation(ScriptConstantProvider.class)).propertyName();
