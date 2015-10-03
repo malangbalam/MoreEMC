@@ -1,12 +1,13 @@
 package mlbm.moreEMC.main;
 
-import static mlbm.moreEMC.main.MoreEMC.LOGGER;
-
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import org.apache.logging.log4j.Logger;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -16,11 +17,16 @@ import mlbm.moreEMC.commands.CommandSetStoredEMC;
 import mlbm.moreEMC.script.core.ScriptCompileException;
 import mlbm.moreEMC.script.core.ScriptLoadingException;
 import mlbm.moreEMC.script.core.ScriptManager;
-import mlbm.moreEMC.script.event.ScriptEventBus;
 import mlbm.moreEMC.script.event.ScriptEventHelper;
 
 @Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME)
 public class MoreEMC {
+	
+	static{
+		//lib init
+		initLibs();
+	}
+	
 	public static Logger LOGGER;
 
 	@Mod.Instance(Constants.MODID)
@@ -28,49 +34,64 @@ public class MoreEMC {
 
 	@EventHandler
 	public void serverLoad(FMLServerStartingEvent event) {
-		//send serverstarting event to script
-		ScriptEventHelper.post("serverstarting", new Object[]{event});
+		// send serverstarting event to script
+		ScriptEventHelper.post("serverstarting", new Object[] { event });
 		event.registerServerCommand(new CommandSetStoredEMC());
 	}
 
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event) {
+		// logger init
 		LOGGER = event.getModLog();
-		//start script initialization
+		// process annotations
+		ScriptManager.handleASMDataTable(event.getAsmData());
+		// start script initialization
 		initScriptManager();
-		//send preinit event to script
-		ScriptEventHelper.post("preinit", new Object[]{event});
+		// send preinit event to script
+		ScriptEventHelper.post("preinit", new Object[] { event });
 	}
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		//send init event to script
-		ScriptEventHelper.post("init", new Object[]{event});
+		// send init event to script
+		ScriptEventHelper.post("init", new Object[] { event });
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPreInitializationEvent event) {
-		//send postinit event to script
-		ScriptEventHelper.post("postinit", new Object[]{event});
+		// send postinit event to script
+		ScriptEventHelper.post("postinit", new Object[] { event });
 	}
-	
-	//internal method. search for scripts and load them
-	private void initScriptManager(){
+
+	// internal method. search for scripts and load them
+	private void initScriptManager() {
 		String mcDir = new File(".").getAbsolutePath().replace("\\.", "\\");
-		File scriptDir = new File(mcDir+"/config/MoreEMC/scripts/");
-		LOGGER.info("searching for scripts at "+scriptDir.getAbsolutePath());
+		File scriptDir = new File(mcDir + "/config/MoreEMC/scripts/");
+		LOGGER.info("searching for scripts at " + scriptDir.getAbsolutePath());
 		try {
 			ScriptManager.initialize(scriptDir);
 		} catch (ScriptLoadingException e) {
-			if(e instanceof ScriptCompileException){
-				LOGGER.error("error with script compilation",e);
-				LOGGER.error("script name:"+((ScriptCompileException) e).scriptName);
-			}else{
-				LOGGER.error("error with script loading",e);
+			if (e instanceof ScriptCompileException) {
+				LOGGER.error("error with script compilation", e);
+				LOGGER.error("script name:" + ((ScriptCompileException) e).scriptName);
+			} else {
+				LOGGER.error("error with script loading", e);
 				LOGGER.error(e.msg);
 			}
 		} catch (IOException e) {
-			LOGGER.error("error while reading script file",e);
+			LOGGER.error("error while reading script file", e);
+		}
+	}
+
+	// internal method. handles required library
+	private static void initLibs() {
+		try {
+			LibManager.extractLibs();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null,e.getMessage(),"MoreEMC Error!",JOptionPane.WARNING_MESSAGE);
+			FMLCommonHandler.instance().exitJava(0, false);
 		}
 	}
 }

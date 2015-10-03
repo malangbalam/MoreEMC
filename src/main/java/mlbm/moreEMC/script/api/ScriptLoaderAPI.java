@@ -12,8 +12,8 @@ import mlbm.moreEMC.script.core.ScriptManager;
 
 /**
  * @author hasunwoo The ScriptLoaderAPI is class that can be accessed from java
- *         script without qualified name(Top-level namespace). it provides basic functionality that
- *         various scripts might require.
+ *         script without qualified name(Top-level namespace). it provides basic
+ *         functionality that various scripts might require.
  */
 public class ScriptLoaderAPI extends ImporterTopLevel {
 	@Override
@@ -25,14 +25,15 @@ public class ScriptLoaderAPI extends ImporterTopLevel {
 	public boolean isModLoaded(String modid) {
 		return Loader.isModLoaded(modid);
 	}
-	
+
 	@JSFunction
 	public boolean isScriptLoaded(String scriptID) {
 		return ScriptManager.isScriptLoaded(scriptID);
 	}
-	
+
 	/**
 	 * loads script dynamically at runtime.
+	 * 
 	 * @param path
 	 * @return status true if script is successfully loaded
 	 */

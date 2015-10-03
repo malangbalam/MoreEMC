@@ -46,17 +46,17 @@ public class NetUtil extends ScriptAPIProvider {
 		}
 		return false;
 	}
-	
+
 	@JSStaticFunction
-	public static String retrieveRawStringFromHTTP(String url, String encoding, int timeout){
-		try{
+	public static String retrieveRawStringFromHTTP(String url, String encoding, int timeout) {
+		try {
 			URL u = new URL(url);
 			URLConnection con = u.openConnection();
 			con.setConnectTimeout(timeout);
 			con.setReadTimeout(timeout);
 			InputStream in = con.getInputStream();
 			return IOUtils.toString(in, encoding);
-		}catch(Exception e){
+		} catch (Exception e) {
 			MoreEMC.LOGGER.catching(e);
 		}
 		return null;

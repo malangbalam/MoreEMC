@@ -5,7 +5,7 @@ package mlbm.moreEMC.script.core;
  *         during script compilation process.
  */
 public class ScriptCompileException extends ScriptLoadingException {
-	//package name of script. ex)testScript.zip
+	// package name of script. ex)testScript.zip
 	public final String scriptName;
 
 	public ScriptCompileException(String scriptName, String msg) {

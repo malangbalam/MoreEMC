@@ -16,6 +16,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSFunction;
 
+import mlbm.moreEMC.api.IScriptConstantController;
 import mlbm.moreEMC.api.ScriptAPIProvider;
 import mlbm.moreEMC.api.ScriptConstantProvider;
 import mlbm.moreEMC.main.MoreEMC;
@@ -121,16 +122,25 @@ public class ScriptCompiler {
 		Context ctx = Context.enter();
 		Scriptable scope = ctx.initStandardObjects(ScriptManager.topAPI, false);
 		String[] topScopeFuncs = getAllJSFunctions(ScriptManager.topAPI.getClass());
-		((ScriptableObject) scope).defineFunctionProperties(topScopeFuncs, ScriptManager.topAPI.getClass(), ScriptableObject.PERMANENT);
+		((ScriptableObject) scope).defineFunctionProperties(topScopeFuncs, ScriptManager.topAPI.getClass(),
+				ScriptableObject.PERMANENT);
 		try {
 			for (ScriptAPIProvider p : ScriptManager.APIs) {
-				if(p.shouldLoad()){
+				if (p.shouldLoad()) {
 					ScriptableObject.defineClass(scope, p.getClass());
 				}
 			}
 			for (Class c : ScriptManager.constantProviders) {
-				String name = ((ScriptConstantProvider) c.getAnnotation(ScriptConstantProvider.class)).propertyName();
-				ScriptableObject.putProperty(scope, name, convertFieldToJSObject(c));
+				boolean shouldLoad = true;
+				Object obj = c.newInstance();
+				if (obj instanceof IScriptConstantController) {
+					shouldLoad = ((IScriptConstantController) obj).shouldLoadConstant();
+				}
+				if (shouldLoad) {
+					String name = ((ScriptConstantProvider) c.getAnnotation(ScriptConstantProvider.class))
+							.propertyName();
+					ScriptableObject.putProperty(scope, name, convertFieldToJSObject(c));
+				}
 			}
 		} catch (Throwable t) {
 			MoreEMC.LOGGER.error("Error while defining apis in script compilation process:", t);
@@ -155,18 +165,21 @@ public class ScriptCompiler {
 		}
 		return obj;
 	}
-	
+
 	/**
-	 * search for script name from manifest data. if there is no script name detected, return null
-	 * @param manifest manifest file
+	 * search for script name from manifest data. if there is no script name
+	 * detected, return null
+	 * 
+	 * @param manifest
+	 *            manifest file
 	 * @return script name
 	 */
-	public static String getScriptFileNameFromManifest(String manifest){
+	public static String getScriptFileNameFromManifest(String manifest) {
 		Scanner sc = new Scanner(manifest);
 		sc.useDelimiter(System.getProperty("line.separator"));
 		while (sc.hasNextLine()) {
 			String cur = sc.nextLine();
-			if(cur.startsWith("fileName=")){
+			if (cur.startsWith("fileName=")) {
 				sc.close();
 				return cur.split("fileName=")[1];
 			}
@@ -174,9 +187,10 @@ public class ScriptCompiler {
 		sc.close();
 		return null;
 	}
-	
-	//thanks to https://github.com/zhuowei/MCPELauncher/blob/master/src/net/zhuoweizhang/mcpelauncher/ScriptManager.java
-	private static String[] getAllJSFunctions(Class<? extends ScriptableObject> c){
+
+	// thanks to
+	// https://github.com/zhuowei/MCPELauncher/blob/master/src/net/zhuoweizhang/mcpelauncher/ScriptManager.java
+	private static String[] getAllJSFunctions(Class<? extends ScriptableObject> c) {
 		List<String> list = new ArrayList<String>();
 		for (Method met : c.getMethods()) {
 			if (met.getAnnotation(JSFunction.class) != null) {

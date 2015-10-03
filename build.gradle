@@ -21,13 +21,27 @@ version = "1.0"
 group= "mlbm.moreEMC" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "moreEMC"
 
+repositories {
+        maven {
+            name = "chickenbones"
+            url = "http://chickenbones.net/maven"
+        }
+        maven {
+            name = "ic2"
+            url = "http://maven.ic2.player.to/"
+        }
+        maven {
+            name "Mobius Repo"
+            url "http://mobiusstrip.eu/maven"
+        }
+}
 minecraft {
     version = "1.7.10-10.13.4.1448-1.7.10"
     runDir = "eclipse"
 }
 
 dependencies {
-    compile "com.pahimar.ee3:EquivalentExchange3:1.7.10-0.3.505:dev"
+    compile "com.pahimar.ee3:EquivalentExchange3:1.7.10-0.3.507:dev"
     compile "org.mozilla:rhino:1.7.7"
 }
 

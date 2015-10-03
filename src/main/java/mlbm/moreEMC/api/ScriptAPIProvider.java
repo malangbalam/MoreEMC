@@ -98,12 +98,14 @@ public abstract class ScriptAPIProvider implements Scriptable {
 
 		return false;
 	}
-	
+
 	/**
-	 * it called on script scope building process. if this method return false, this API won't load
+	 * it called on script scope building process. if this method return false,
+	 * this API won't load
+	 * 
 	 * @return
 	 */
-	public boolean shouldLoad(){
+	public boolean shouldLoad() {
 		return true;
 	}
 }

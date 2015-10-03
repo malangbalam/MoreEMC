@@ -3,24 +3,16 @@ package mlbm.moreEMC.script.api;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Enumeration;
 
-import org.apache.commons.compress.archivers.ArchiveInputStream;
-import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.mozilla.javascript.annotations.JSStaticFunction;
 
-import io.netty.handler.codec.compression.CompressionException;
 import mlbm.moreEMC.api.ScriptAPI;
 import mlbm.moreEMC.api.ScriptAPIProvider;
 import mlbm.moreEMC.main.Constants;
@@ -46,12 +38,12 @@ public class FileUtil extends ScriptAPIProvider {
 	public static String getMinecraftDir() {
 		return new File(".").getAbsolutePath().replace("\\.", "\\");
 	}
-	
+
 	@JSStaticFunction
-	public static boolean mkdir(String path){
-		try{
+	public static boolean mkdir(String path) {
+		try {
 			return new File(path).mkdir();
-		}catch(Exception e){
+		} catch (Exception e) {
 			MoreEMC.LOGGER.catching(e);
 			return false;
 		}
@@ -92,31 +84,31 @@ public class FileUtil extends ScriptAPIProvider {
 			return false;
 		}
 	}
-	
+
 	@JSStaticFunction
-	public static boolean decompressZip(String src, String dest){
-		ZipFile zf  = null;
+	public static boolean decompressZip(String src, String dest) {
+		ZipFile zf = null;
 		File des = new File(dest);
 		try {
 			zf = new ZipFile(new File(src));
 			Enumeration<ZipArchiveEntry> entries = zf.getEntries();
-			while(entries.hasMoreElements()){
+			while (entries.hasMoreElements()) {
 				ZipArchiveEntry ent = entries.nextElement();
-				File destzip = new File(des,ent.getName());
+				File destzip = new File(des, ent.getName());
 				destzip.getParentFile().mkdirs();
-				if(!ent.isDirectory()){
+				if (!ent.isDirectory()) {
 					int length = 0;
 					byte[] buffer = new byte[1024];
 					BufferedInputStream bis = new BufferedInputStream(zf.getInputStream(ent));
 					FileOutputStream fos = new FileOutputStream(destzip);
-                    BufferedOutputStream bos = new BufferedOutputStream(fos,1024);
-                    while((length = bis.read(buffer, 0, 1024)) !=-1){
-                    	bos.write(buffer, 0, length);
-                    }
-                    bos.flush();
-                    bos.close();
-                    bis.close();
-			    }
+					BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);
+					while ((length = bis.read(buffer, 0, 1024)) != -1) {
+						bos.write(buffer, 0, length);
+					}
+					bos.flush();
+					bos.close();
+					bis.close();
+				}
 			}
 			return true;
 		} catch (IOException e) {
@@ -129,9 +121,9 @@ public class FileUtil extends ScriptAPIProvider {
 
 	@JSStaticFunction
 	public static boolean deleteFile(String path) {
-		try{
+		try {
 			return new File(path).delete();
-		}catch(Exception e){
+		} catch (Exception e) {
 			MoreEMC.LOGGER.catching(e);
 			return false;
 		}
