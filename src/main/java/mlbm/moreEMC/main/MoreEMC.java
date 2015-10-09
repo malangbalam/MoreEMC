@@ -3,11 +3,8 @@ package mlbm.moreEMC.main;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JOptionPane;
-
 import org.apache.logging.log4j.Logger;
 
-import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -21,12 +18,6 @@ import mlbm.moreEMC.script.event.ScriptEventHelper;
 
 @Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME)
 public class MoreEMC {
-	
-	static{
-		//lib init
-		initLibs();
-	}
-	
 	public static Logger LOGGER;
 
 	@Mod.Instance(Constants.MODID)
@@ -80,18 +71,6 @@ public class MoreEMC {
 			}
 		} catch (IOException e) {
 			LOGGER.error("error while reading script file", e);
-		}
-	}
-
-	// internal method. handles required library
-	private static void initLibs() {
-		try {
-			LibManager.extractLibs();
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,e.getMessage(),"MoreEMC Error!",JOptionPane.WARNING_MESSAGE);
-			FMLCommonHandler.instance().exitJava(0, false);
 		}
 	}
 }

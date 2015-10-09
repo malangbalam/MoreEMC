@@ -1,63 +1,36 @@
-package mlbm.moreEMC.main;
+package mlbm.moreEMC.coremod;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.ModClassLoader;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 
 public class LibManager {
 	final static File LIB_DIR = new File(new File(".").getAbsolutePath().replace("\\.", "\\") + "\\moreEMC_library\\");
 
 	static void extractLibs() throws Exception {
-		String rhino = "org.mozilla.javascript.Context";
-		String rhinoLibName = "rhino-1.7.7.jar"; 
-		if (!isClassLoaded(rhino)) {
-			extract(rhinoLibName);
-			File lib = new File(LIB_DIR, rhinoLibName);
-			System.out.println("isFile:"+lib.isFile());
-		    ((ModClassLoader)Loader.instance().getModClassLoader()).addFile(lib);
-		    if(!isClassLoaded(rhino)){
-				throw new Exception("unable to load required libs.");
-			}
-		}
-	}
-
-	static boolean isClassLoaded(String fullname) {
-		try {
-			Class.forName(fullname, false, LibManager.class.getClassLoader());
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
+		String rhinoLibName = "rhino-1.7.7.jar";
+		extract(rhinoLibName);
+		File lib = new File(LIB_DIR, rhinoLibName);
+		((LaunchClassLoader) LibManager.class.getClassLoader()).addURL(lib.toURI().toURL());
 	}
 
 	private static void extract(String libName) throws Exception {
-		boolean exists = new File(LIB_DIR,libName).exists();
+		boolean exists = new File(LIB_DIR, libName).exists();
 		if (!exists) {
-			try{
-				System.out.println("Extracting Library:"+libName);
+			try {
+				System.out.println("Extracting Library:" + libName);
 				LIB_DIR.mkdir();
-	            JarFile modJarfile = new JarFile(findPathJar(LibManager.class));
-	            InputStream is = modJarfile.getInputStream(modJarfile.getJarEntry("libs/"+libName));
-	            FileUtils.copyInputStreamToFile(is, new File(LIB_DIR,libName));
-	            modJarfile.close();
+				JarFile modJarfile = new JarFile(findPathJar(LibManager.class));
+				InputStream is = modJarfile.getInputStream(modJarfile.getJarEntry("libs/" + libName));
+				FileUtils.copyInputStreamToFile(is, new File(LIB_DIR, libName));
+				modJarfile.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new Exception("unable to extract required libs.");

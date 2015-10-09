@@ -21,6 +21,13 @@ version = "1.0"
 group= "mlbm.moreEMC" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "moreEMC"
 
+jar {
+        manifest {
+        attributes 'FMLCorePlugin': 'mlbm.moreEMC.coremod.MoreEMCLoadingPlugin',
+                        'FMLCorePluginContainsFMLMod': 'true'
+    }
+}
+
 repositories {
         maven {
             name = "chickenbones"
