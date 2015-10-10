@@ -16,9 +16,25 @@ public class LibManager {
 
 	static void extractLibs() throws Exception {
 		String rhinoLibName = "rhino-1.7.7.jar";
-		extract(rhinoLibName);
-		File lib = new File(LIB_DIR, rhinoLibName);
-		((LaunchClassLoader) LibManager.class.getClassLoader()).addURL(lib.toURI().toURL());
+		String str = "org.mozilla.javascript.Context";
+		if (!checkClass(str)) {
+			extract(rhinoLibName);
+			File lib = new File(LIB_DIR, rhinoLibName);
+			((LaunchClassLoader) LibManager.class.getClassLoader()).addURL(lib.toURI().toURL());
+			if (!checkClass(str)) {
+				throw new Exception("library is injected to classpath. but class is unable to load");
+			}
+		}
+	}
+
+	private static boolean checkClass(String name) {
+		LaunchClassLoader lc = (LaunchClassLoader) LibManager.class.getClassLoader();
+		try {
+			lc.findClass(name);
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 
 	private static void extract(String libName) throws Exception {

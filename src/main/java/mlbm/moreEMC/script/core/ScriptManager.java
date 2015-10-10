@@ -10,6 +10,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -66,7 +67,7 @@ public class ScriptManager {
 					if (!exceptionOccured) {
 						if (!pathname.isDirectory() && FilenameUtils.isExtension(pathname.getName(), "zip")) {
 							try {
-								loadScript(pathname);
+								loadScriptFromFile(pathname);
 							} catch (ScriptLoadingException e) {
 								exceptionWrapper.set(e);
 								exceptionOccured = true;
@@ -91,7 +92,7 @@ public class ScriptManager {
 	 * @param f
 	 *            file of script package file
 	 */
-	public static void loadScript(File f) throws ScriptLoadingException {
+	public static void loadScriptFromFile(File f) throws ScriptLoadingException {
 		if (f.exists() && FilenameUtils.isExtension(f.getName(), "zip")) {
 			ZipFile zf = null;
 			try {
@@ -235,5 +236,33 @@ public class ScriptManager {
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
+	}
+
+	public static SideController getSide(String manifest) {
+		boolean serverSide = true;
+		boolean clientSide = true;
+		boolean clientSideRequired = true;
+		String cur = null;
+		Scanner sc = new Scanner(manifest);
+		sc.useDelimiter(System.getProperty("line.separator"));
+		try {
+			while (sc.hasNextLine()) {
+				cur = sc.nextLine();
+				if (!cur.startsWith("//")) {
+					if (cur.startsWith("clientSide")) {
+						clientSide = Boolean.parseBoolean(cur.split("clientSide")[1]);
+					} else if (cur.startsWith("serverSide")) {
+						serverSide = Boolean.parseBoolean(cur.split("serverSide")[1]);
+					} else if (cur.startsWith("clientSideRequired")) {
+						clientSideRequired = Boolean.parseBoolean(cur.split("clientSideRequired")[1]);
+					}
+				}
+			}
+		} catch (Exception e) {
+			return new SideController();
+		} finally {
+			sc.close();
+		}
+		return new SideController(clientSideRequired, clientSide, serverSide);
 	}
 }

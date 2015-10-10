@@ -40,7 +40,7 @@ public class ScriptLoaderAPI extends ImporterTopLevel {
 	@JSFunction
 	public boolean loadScript(String path) {
 		try {
-			ScriptManager.loadScript(new File(path));
+			ScriptManager.loadScriptFromFile(new File(path));
 		} catch (ScriptLoadingException e) {
 			e.printStackTrace();
 			return false;

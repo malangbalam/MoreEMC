@@ -18,15 +18,22 @@ public class ScriptHolder {
 	private Script wrappedScript;
 	public Map<String, String> eventReceivers;
 	public Scriptable scope;
+	private SideController sideController;
 
 	public ScriptHolder(String scriptID, Scriptable scope, String sourceFileName, String scriptPackageFileName,
-			Script script, Map<String, String> eventReceivers) {
+			Script script, Map<String, String> eventReceivers, SideController sidecontroller) {
 		this.scriptID = scriptID;
 		this.sourceFileName = sourceFileName;
 		this.PackageFileName = scriptPackageFileName;
 		this.wrappedScript = script;
 		this.eventReceivers = eventReceivers;
 		this.scope = scope;
+		this.sideController = sidecontroller;
+	}
+
+	public ScriptHolder(String scriptID, Scriptable scope, String sourceFileName, String scriptPackageFileName,
+			Script script, Map<String, String> eventReceivers) {
+		this(scriptID, scope, sourceFileName, scriptPackageFileName, script, eventReceivers, new SideController());
 	}
 
 	public String getScriptID() {

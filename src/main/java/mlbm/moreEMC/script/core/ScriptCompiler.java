@@ -16,6 +16,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.annotations.JSFunction;
 
+import cpw.mods.fml.relauncher.Side;
 import mlbm.moreEMC.api.IScriptConstantController;
 import mlbm.moreEMC.api.ScriptAPIProvider;
 import mlbm.moreEMC.api.ScriptConstantProvider;
@@ -46,6 +47,9 @@ public class ScriptCompiler {
 		ScriptHolder script = null;
 		String scriptID = null;
 		String scriptFileName = null;
+		boolean clientSide = true;
+		boolean serverSide = true;
+		boolean clientSideRequired = false;
 		HashMap<String, String> eventReceivers = new HashMap<String, String>();
 		Scanner sc = new Scanner(manifest);
 		sc.useDelimiter(System.getProperty("line.separator"));
@@ -63,7 +67,22 @@ public class ScriptCompiler {
 						eventReceivers.put(eventID, handlerFunc);
 					} else if (cur.startsWith("fileName=")) {
 						scriptFileName = cur.split("fileName=")[1];
+					} else if (cur.startsWith("clientSide=")) {
+						clientSide = Boolean.parseBoolean(cur.split("clientSide=")[1]);
+					} else if (cur.startsWith("serverSide=")) {
+						serverSide = Boolean.parseBoolean(cur.split("serverSide=")[1]);
+					} else if (cur.startsWith("clientSideRequired=")) {
+						clientSideRequired = Boolean.parseBoolean(cur.split("clientSideRequired=")[1]);
 					}
+				}
+			}
+			if (MoreEMC.modSide == Side.CLIENT) {
+				if (!clientSide) {
+					throw new ScriptCompileException(packageFileName, "this script is not compatible with client");
+				}
+			} else if (MoreEMC.modSide == Side.SERVER) {
+				if (!serverSide) {
+					throw new ScriptCompileException(packageFileName, "this script is not compatible with server");
 				}
 			}
 			if (scriptID == null) {
@@ -83,7 +102,8 @@ public class ScriptCompiler {
 			Scriptable scope = createScope();
 			s.exec(ctx, scope);
 			ctx.exit();
-			script = new ScriptHolder(scriptID, scope, fileName, packageFileName, s, eventReceivers);
+			script = new ScriptHolder(scriptID, scope, fileName, packageFileName, s, eventReceivers,
+					new SideController(clientSideRequired, clientSide, serverSide));
 		} catch (PatternSyntaxException ex1) {
 			throw new ScriptCompileException(packageFileName, "syntax error in manifest file:" + cur);
 		} catch (Exception e) {

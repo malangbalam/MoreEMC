@@ -10,6 +10,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.relauncher.Side;
 import mlbm.moreEMC.commands.CommandSetStoredEMC;
 import mlbm.moreEMC.script.core.ScriptCompileException;
 import mlbm.moreEMC.script.core.ScriptLoadingException;
@@ -19,6 +20,8 @@ import mlbm.moreEMC.script.event.ScriptEventHelper;
 @Mod(modid = Constants.MODID, version = Constants.VERSION, name = Constants.NAME)
 public class MoreEMC {
 	public static Logger LOGGER;
+	// sied of mod itself
+	public static Side modSide;
 
 	@Mod.Instance(Constants.MODID)
 	public static MoreEMC instance;
@@ -34,6 +37,8 @@ public class MoreEMC {
 	public void preinit(FMLPreInitializationEvent event) {
 		// logger init
 		LOGGER = event.getModLog();
+		modSide = event.getSide();
+		LOGGER.info("Loading MoreEMC on:" + modSide);
 		// process annotations
 		ScriptManager.handleASMDataTable(event.getAsmData());
 		// start script initialization
