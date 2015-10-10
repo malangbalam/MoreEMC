@@ -17,7 +17,9 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.0"
+ext.configFile = file('build.properties')
+
+version = "Aether-0.1.1"
 group= "mlbm.moreEMC" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "moreEMC"
 
