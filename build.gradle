@@ -20,12 +20,12 @@ apply plugin: 'forge'
 ext.configFile = file('build.properties')
 
 version = "Aether-0.1.1"
-group= "mlbm.moreEMC" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "net.malangbaram.moreEMC" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "moreEMC"
 
 jar {
         manifest {
-        attributes 'FMLCorePlugin': 'mlbm.moreEMC.coremod.MoreEMCLoadingPlugin',
+        attributes 'FMLCorePlugin': 'net.malangbaram.moreEMC.coremod.MoreEMCLoadingPlugin',
                         'FMLCorePluginContainsFMLMod': 'true'
     }
 }
