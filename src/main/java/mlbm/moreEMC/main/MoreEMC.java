@@ -10,6 +10,7 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import mlbm.moreEMC.commands.CommandSetStoredEMC;
 import mlbm.moreEMC.script.core.ScriptCompileException;
@@ -45,6 +46,8 @@ public class MoreEMC {
 		initScriptManager();
 		// send preinit event to script
 		ScriptEventHelper.post("preinit", new Object[] { event });
+		// registers connection handler
+		
 	}
 
 	@EventHandler
